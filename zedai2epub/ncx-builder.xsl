@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns="http://www.daisy.org/z3986/2005/ncx/"
   xmlns:f="http://www.daisy.org/ns/functions" xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:ncx="http://www.daisy.org/z3986/2005/ncx/" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:z="http://www.daisy.org/ns/z3986/authoring/" exclude-result-prefixes="xs z" version="2.0">
+  xmlns:z="http://www.daisy.org/ns/z3986/authoring/" exclude-result-prefixes="f ncx xs z" version="2.0">
 
   <xsl:output method="xml" indent="yes"/>
 
@@ -11,8 +11,8 @@
       <head>
         <meta name="dtb:uid"
           content="{z:document/z:head/z:meta[@property='dcterms:identifier']/@content}"/>
-        <meta name="dtb:depth" content="-1"/>
-        <!--TODO: calculate depth-->
+        <meta name="dtb:depth" 
+          content="{max(for $n in //*[@ncx:type='navMap'] return count($n/ancestor-or-self::*[@ncx:type='navMap']))}"/>
         <meta name="dtb:generator" content="DAISY Pipeline 2"/>
         <!--TODO function to get the Pipeline version ?-->
         <meta name="dtb:totalPageCount" content="{f:page-count(/)}"/>
@@ -51,7 +51,7 @@
 
   <xsl:template match="z:*[@ncx:type='navMap']" mode="navMap">
 
-    <navPoint id="{generate-id(.)}" playOrder="{@playOrder}">
+    <navPoint id="{generate-id(.)}" playOrder="{@ncx:playOrder}">
       <xsl:if test="@class">
         <xsl:attribute name="class" select="@class"/>
       </xsl:if>
@@ -76,8 +76,7 @@
 
   <xsl:template match="z:pagebreak" mode="pageList">
 
-    <!--TODO use "string(number($value)) != 'NaN'" instead of "castable as" ?-->
-    <pageTarget id="{generate-id(.)}" playOrder="{@playOrder}">
+    <pageTarget id="{generate-id(.)}" playOrder="{@ncx:playOrder}">
       <xsl:if test="@class">
         <xsl:attribute name="class" select="@class"/>
       </xsl:if>
