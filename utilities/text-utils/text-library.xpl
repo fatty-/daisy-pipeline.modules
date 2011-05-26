@@ -19,8 +19,10 @@
                 <p:pipe step="parameters" port="result"/>
             </p:input>
         </p:template>
+
         <p:store method="text">
             <p:with-option name="href" select="$target"/>
         </p:store>
+
     </p:declare-step>
 </p:library>
