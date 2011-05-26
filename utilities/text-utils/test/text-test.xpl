@@ -10,7 +10,10 @@
 	<p:import href="../text-library.xpl" />
 	<p:import href="../../file-utils/fileutils-library.xpl" />
 
-	<px:text-create name="txcreate" target="file:/tmp/test.txt">
+	<p:variable name="target" select="'file:/tmp/test.txt'"/>
+
+	<px:text-create name="txcreate">
+		<p:with-option name="target" select="$target" />
 		<p:input port="source">
 			<p:inline>
 				<c:data>bla</c:data>
@@ -19,9 +22,11 @@
 	</px:text-create>
 
 	<cxf:info name="info">
-		<p:with-option name="href" select="'file:/tmp/test.txt'"/>
+		<p:with-option name="href" select="$target"/>
 	</cxf:info>
 
-	<cxf:delete name="delete" href="file:/tmp/test.txt" />
+	<cxf:delete name="delete">
+		<p:with-option name="href" select="$target" />
+	</cxf:delete>
 
 </p:declare-step>
