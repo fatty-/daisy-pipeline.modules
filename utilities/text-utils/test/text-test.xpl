@@ -10,13 +10,16 @@
 	<p:import href="../text-library.xpl" />
 	<p:import href="../../file-utils/fileutils-library.xpl" />
 
-	<px:text-create name="txcreate" target="file:/tmp/test.txt" text="bla" />
+	<px:text-create name="txcreate" target="file:/tmp/test.txt">
+		<p:input port="source">
+			<p:inline>
+				<c:data>bla</c:data>
+			</p:inline>
+		</p:input>
+	</px:text-create>
 
 	<cxf:info name="info">
 		<p:with-option name="href" select="'file:/tmp/test.txt'"/>
-		<!-- FIXME: Don't know why the following step fails: -->
-		<!-- Undeclared option specified: fail-on-error -->
-		<!--<p:with-option name="fail-on-error" select="'true'"/>-->
 	</cxf:info>
 
 	<cxf:delete name="delete" href="file:/tmp/test.txt" />
