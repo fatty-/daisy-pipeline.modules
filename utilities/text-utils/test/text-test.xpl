@@ -14,8 +14,9 @@
 
 	<px:text-create name="txcreate">
 		<p:with-option name="target" select="$target" />
+		<p:with-option name="trim" select="'false'" />
 		<p:input port="source">
-			<p:inline><c:data>bla</c:data></p:inline>
+			<p:inline><c:data>   bla   </c:data></p:inline>
 		</p:input>
 	</px:text-create>
 

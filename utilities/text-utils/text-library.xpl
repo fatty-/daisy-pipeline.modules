@@ -7,10 +7,32 @@
 
         <p:option name="target" required="true"/>
 
+        <p:option name="trim" select="'true'"/>
+
+        <p:group name="trim">
+					<p:output port="result" />
+					<p:choose>
+						<p:when test="$trim = 'true'">
+							<p:string-replace match="text()" replace="normalize-space()">
+								<p:input port="source">
+									<p:pipe step="text-create" port="source" />
+								</p:input>
+							</p:string-replace> 
+						</p:when>
+						<p:otherwise>
+							<p:identity>
+								<p:input port="source">
+									<p:pipe step="text-create" port="source" />
+								</p:input>
+							</p:identity>
+						</p:otherwise>
+					</p:choose>
+        </p:group>
+
         <p:in-scope-names name="parameters"/>
         <p:template>
             <p:input port="template">
-                <p:pipe step="text-create" port="source" />
+                <p:pipe step="trim" port="result" />
             </p:input>
             <p:input port="source">
                 <p:empty/>
