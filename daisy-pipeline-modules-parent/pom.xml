@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>org.daisy.pipeline</groupId>
+        <artifactId>daisy-pipeline-modules-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <packaging>pom</packaging>
+        <name>Daisy Pipeline Modules - Parent project</name>
+
+        <properties>
+                <tycho-version>0.10.0</tycho-version>
+		 <daisy.repo>${project.baseUri}../../daisy-pipeline/repo/</daisy.repo>
+		<daisy.mtarget>${project.baseUri}../modules-target-platform/</daisy.mtarget> 
+        </properties>
+	<modules>
+		<module>../modules-target-platform</module>
+		<module>../daisy.pipeline.modules.feature</module>
+		<module>../daisy.pipeline.modules.site</module>
+		<module>../dtbook-to-zedai</module>  
+		<module>../utilities/dtbook-utils</module>
+		<module>../utilities/file-utils</module>
+		<module>../utilities/fileset-utils</module>
+		<module>../utilities/metadata-utils</module>
+		<module>../utilities/zip-utils</module>
+	</modules>
+ <repositories>
+		<repository>
+                  <id>daisy_repo</id>
+                  <layout>p2</layout>
+                  <url>${daisy.repo}</url>
+                </repository>
+
+                <repository>
+                  <id>modules-target-platform</id>
+                  <layout>p2</layout>
+                  <url>${daisy.mtarget}</url>
+                </repository>
+
+</repositories>
+        <build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.sonatype.tycho</groupId>
+                                <artifactId>tycho-maven-plugin</artifactId>
+                                <version>${tycho-version}</version>
+                                <extensions>true</extensions>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.sonatype.tycho</groupId>
+                                <artifactId>maven-osgi-compiler-plugin</artifactId>
+                                <version>${tycho-version}</version>
+                                <configuration>
+                                        <source>1.6</source>
+                                        <target>1.6</target>
+                                </configuration>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.sonatype.tycho</groupId>
+                                <artifactId>target-platform-configuration</artifactId>
+                                <version>${tycho-version}</version>
+                                <configuration>
+                                        <resolver>p2</resolver>
+                                        <target>
+                                                <artifact>
+                                                        <groupId>org.daisy.pipeline</groupId>
+                                                        <artifactId>modules-target-platform</artifactId>
+                                                        <version>0.0.1-SNAPSHOT</version>
+                                                        <classifier>modules-tp</classifier>
+                                                </artifact>
+                                        </target>
+                                        <ignoreTychoRepositories>false</ignoreTychoRepositories>
+
+                                </configuration>
+                        </plugin>
+                </plugins>
+
+
+        </build>
+
+</project>
