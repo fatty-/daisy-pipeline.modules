@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.daisy.pipeline</groupId>
   <artifactId>html-utils</artifactId>
-  <version>1.0.0.0</version>
+  <version>1.0.0.qualifier</version>
   <packaging>eclipse-plugin</packaging>
   <parent>
     <groupId>org.daisy.pipeline</groupId>
