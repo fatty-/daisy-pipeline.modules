@@ -9,15 +9,25 @@
 
         <properties>
                 <tycho-version>0.10.0</tycho-version>
-		 <daisy.repo>${project.baseUri}../../daisy-pipeline/repo/</daisy.repo>
-		<daisy.mtarget>${project.baseUri}../modules-target-platform/</daisy.mtarget> 
+		 <daisy.baseUri>${project.baseUri}/${project.parent.relativePath}/../</daisy.baseUri>
+		 <daisy.repo>${daisy.baseUri}/../daisy-pipeline/repo/</daisy.repo>
+		<daisy.mtarget>${daisy.baseUri}/modules-target-platform/</daisy.mtarget> 
         </properties>
 	<modules>
+                <!-- TODO change to  .. daisy.basedir rel path -->
 		<module>../modules-target-platform</module>
-		<module>../daisy.pipeline.modules.feature</module>
-		<module>../daisy.pipeline.modules.site</module>
-		<module>../metadata-utilities</module>
-		<module>../dtbook2zedai</module>  
+                <module>../daisy.pipeline.modules.feature</module>
+                <module>../daisy.pipeline.modules.site</module>
+                <module>../dtbook-to-zedai</module>  
+                <module>../utilities/dtbook-utils</module>
+                <module>../utilities/file-utils</module>
+                <module>../utilities/fileset-utils</module>
+                <module>../utilities/metadata-utils</module>
+                <module>../utilities/zip-utils</module>
+                <module>../utilities/mediaoverlay-utils</module>
+                <module>../utilities/html-utils</module>
+
+ 
 	</modules>
  <repositories>
 		<repository>
