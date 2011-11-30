@@ -10,7 +10,7 @@
 	<system systemId='http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd' uri='dtbook-2005-2.dtd'/>
 
 	<public publicId='-//NISO//DTD dtbook 2005-3//EN' uri='dtbook-2005-3.dtd'/>
-	<system systemId='http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd' uri='dtbook-2005-3.dtd'/>
+	<system systemId='http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd' uri='dtbook-2005-3.dtd'/>
 
 	<public publicId='-//W3C//DTD SMIL 1.0//EN' uri='SMIL10.dtd'/>
 	<system systemId='http://www.w3.org/TR/REC-smil/SMIL10.dtd' uri='SMIL10.dtd'/>
@@ -32,5 +32,4 @@
 
 	<public publicId='-//W3C//ENTITIES Symbols for XHTML//EN' uri='xhtml-symbol.ent'/>
 	<system systemId='http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent' uri='xhtml-symbol.ent'/>
-
 </catalog>
