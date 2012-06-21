@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: common-entities
-Bundle-SymbolicName: org.daisy.pipeline.modules.common-entities
-Bundle-Version: 1.0.0.qualifier
