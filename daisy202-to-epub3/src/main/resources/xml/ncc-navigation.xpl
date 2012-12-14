@@ -162,8 +162,8 @@
     <p:identity name="ncc-navigation.original-links"/>
     <p:viewport match="html:a[@href and not(matches(@href,'^[^/]+:'))]">
         <p:xslt>
-            <p:with-param name="from" select="$publication-dir"/>
-            <p:with-param name="to"
+            <p:with-param name="base" select="$publication-dir"/>
+            <p:with-param name="uri"
                 select="concat(if (starts-with(/*/@href,'#'))
                                     then concat($publication-dir,'navigation.xhtml')
                                     else concat($content-dir,replace(tokenize(/*/@href,'#')[1],'^(.*)\.html$','$1.xhtml')),
@@ -174,7 +174,7 @@
         </p:xslt>
     </p:viewport>
     <p:add-attribute match="/*" attribute-name="original-base">
-        <p:with-option name="attribute-value" select="/*/@xml:base"/>
+        <p:with-option name="attribute-value" select="base-uri(/*)"/>
     </p:add-attribute>
     <p:add-attribute match="/*" attribute-name="xml:base">
         <p:with-option name="attribute-value" select="concat($publication-dir,'navigation.xhtml')"/>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns="http://www.idpf.org/2007/opf" xmlns:f="http://www.daisy.org/ns/pipeline/internal-functions">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.idpf.org/2007/opf" xmlns:f="http://www.daisy.org/ns/pipeline/internal-functions"
+    exclude-result-prefixes="#all" version="2.0">
     <xsl:output indent="yes"/>
     <xsl:param name="result-uri"/>
 
@@ -14,9 +15,9 @@
                 <item>
                     <xsl:copy-of select="@href|@media-type|@id"/>
                     <xsl:variable name="item-uri-head"
-                        select="if (starts-with(resolve-uri(@href,/*/@xml:base),'file:/')) then 'file:' else replace(replace(resolve-uri(@href,/*/@xml:base),'^([^/]+/+[^/]+)/.*$','$1'),'/+','/')"/>
+                        select="if (starts-with(resolve-uri(@href,base-uri(.)),'file:/')) then 'file:' else replace(replace(resolve-uri(@href,base-uri(.)),'^([^/]+/+[^/]+)/.*$','$1'),'/+','/')"/>
                     <xsl:variable name="item-uri-tail"
-                        select="replace(if (starts-with(resolve-uri(@href,/*/@xml:base),'file:/')) then replace(resolve-uri(@href,/*/@xml:base),'^file:/+','') else replace(resolve-uri(@href,/*/@xml:base),'^[^/]+/+[^/]+/+',''),'/+','/')"/>
+                        select="replace(if (starts-with(resolve-uri(@href,base-uri(.)),'file:/')) then replace(resolve-uri(@href,base-uri(.)),'^file:/+','') else replace(resolve-uri(@href,base-uri(.)),'^[^/]+/+[^/]+/+',''),'/+','/')"/>
                     <xsl:if test="$item-uri-head=$result-uri-head">
                         <xsl:attribute name="href" select="f:relative-to(tokenize(concat($result-uri-head,'/',$result-uri-tail),'/+'),tokenize(concat($item-uri-head,'/',$item-uri-tail),'/+'),'')"/>
                     </xsl:if>
