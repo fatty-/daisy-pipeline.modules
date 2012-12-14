@@ -3,19 +3,21 @@
   xmlns:f="http://www.daisy.org/ns/functions-internal" xmlns:its="http://www.w3.org/2005/11/its"
   xmlns:pf="http://www.daisy.org/ns/functions" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:z="http://www.daisy.org/ns/z3998/authoring/" exclude-result-prefixes="#all" version="2.0">
+  xpath-default-namespace="http://www.daisy.org/ns/z3998/authoring/"
+  exclude-result-prefixes="#all" version="2.0">
 
   <xsl:import href="zedai-vocab-utils.xsl"/>
 
   <xsl:output method="xhtml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+  <xsl:strip-space elements="*"/>
 
-  <xsl:param name="base" select="base-uri()"/>
-  
-  <xsl:key name="refs" match="z:*[@ref]" use="tokenize(@ref,'\s+')"/>
+  <xsl:param name="base" select="base-uri(/)"/>
+
+  <xsl:key name="refs" match="*[@ref]" use="tokenize(@ref,'\s+')"/>
 
   <xsl:template match="/">
     <xsl:call-template name="html">
-      <xsl:with-param name="nodes" select="z:document/z:body/*"/>
+      <xsl:with-param name="nodes" select="document/body/*"/>
     </xsl:call-template>
   </xsl:template>
 
@@ -43,7 +45,7 @@
 
   <!--TODO normalize: flatten meta -->
   <!--TODO translate: meta -->
-  <!--<xsl:template match="z:meta">
+  <!--<xsl:template match="meta">
     <meta>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -55,7 +57,7 @@
   <!--===========================================================-->
 
   <!--====== Section module =====================================-->
-  <xsl:template match="z:section">
+  <xsl:template match="section">
     <section>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -63,7 +65,7 @@
   </xsl:template>
 
   <!--====== Bibliography module ================================-->
-  <xsl:template match="z:bibliography">
+  <xsl:template match="bibliography">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('bibliography',@role)"/>
@@ -74,7 +76,7 @@
     </section>
   </xsl:template>
 
-  <xsl:template match="z:section" mode="bibliography">
+  <xsl:template match="section" mode="bibliography">
     <section>
       <xsl:apply-templates select="@*"/>
       <!--TODO translate: bibliography/section[@role='custom']-->
@@ -82,7 +84,7 @@
     </section>
   </xsl:template>
 
-  <xsl:template match="z:entry" mode="bibliography">
+  <xsl:template match="entry" mode="bibliography">
     <div>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('biblioentry',@role)"/>
@@ -94,7 +96,7 @@
 
   <!--====== Cover module =======================================-->
 
-  <xsl:template match="z:cover">
+  <xsl:template match="cover">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('cover',@role)"/>
@@ -103,28 +105,28 @@
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:spine">
+  <xsl:template match="spine">
     <section>
       <xsl:apply-templates select="@*"/>
       <!--TODO translate: @role-->
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:frontcover">
+  <xsl:template match="frontcover">
     <section>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:backcover">
+  <xsl:template match="backcover">
     <section>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:flaps">
+  <xsl:template match="flaps">
     <section>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -135,7 +137,7 @@
   <!--====== Glossary module ====================================-->
   <!--TODO normalize: simple glossary => dl-->
   <!--TODO variants: handle the block variant-->
-  <xsl:template match="z:glossary">
+  <xsl:template match="glossary">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('glossary',@role)"/>
@@ -144,13 +146,13 @@
       <xsl:apply-templates mode="glossary"/>
     </section>
   </xsl:template>
-  <xsl:template match="z:section" mode="glossary">
+  <xsl:template match="section" mode="glossary">
     <section>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="glossary"/>
     </section>
   </xsl:template>
-  <xsl:template match="z:entry" mode="glossary">
+  <xsl:template match="entry" mode="glossary">
     <dt>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('glossterm',@role)"/>
@@ -162,19 +164,19 @@
 
   <!--====== Index module =======================================-->
 
-  <xsl:template match="z:index">
+  <xsl:template match="index">
     <nav>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="index"/>
     </nav>
   </xsl:template>
-  <xsl:template match="z:section" mode="index">
+  <xsl:template match="section" mode="index">
     <section>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="glossary"/>
     </section>
   </xsl:template>
-  <xsl:template match="z:entry" mode="index">
+  <xsl:template match="entry" mode="index">
     <!--FIXME normalize adjacent entries into ul -->
     <xsl:apply-templates/>
   </xsl:template>
@@ -182,7 +184,7 @@
 
   <!--====== Document partitions module =========================-->
 
-  <xsl:template match="z:frontmatter">
+  <xsl:template match="frontmatter">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('frontmatter',@role)"/>
@@ -191,7 +193,7 @@
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:bodymatter">
+  <xsl:template match="bodymatter">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('bodymatter',@role)"/>
@@ -200,7 +202,7 @@
       <xsl:apply-templates/>
     </section>
   </xsl:template>
-  <xsl:template match="z:backmatter">
+  <xsl:template match="backmatter">
     <section>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('backmatter',@role)"/>
@@ -213,14 +215,14 @@
 
   <!--====== ToC module =========================================-->
 
-  <xsl:template match="z:toc">
+  <xsl:template match="toc">
     <nav>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('toc',@role)"/>
       </xsl:call-template>
       <xsl:apply-templates select="@* except @role"/>
-      <!--normalize adjacent z:entry elements into html:ul -->
-      <xsl:for-each-group select="*" group-adjacent="empty(self::z:entry)">
+      <!--normalize adjacent entry elements into html:ul -->
+      <xsl:for-each-group select="*" group-adjacent="empty(self::entry)">
         <xsl:choose>
           <xsl:when test="not(current-grouping-key())">
             <ul>
@@ -235,25 +237,25 @@
     </nav>
   </xsl:template>
 
-  <xsl:template match="z:entry" mode="toc">
+  <xsl:template match="entry" mode="toc">
     <li>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </li>
   </xsl:template>
-  <xsl:template match="z:block" mode="toc">
+  <xsl:template match="block" mode="toc">
     <div>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="toc"/>
     </div>
   </xsl:template>
-  <xsl:template match="z:section" mode="toc">
+  <xsl:template match="section" mode="toc">
     <section>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="toc"/>
     </section>
   </xsl:template>
-  <xsl:template match="z:aside" mode="toc">
+  <xsl:template match="aside" mode="toc">
     <aside>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="toc"/>
@@ -262,14 +264,14 @@
 
   <!--====== Verse module =======================================-->
 
-  <xsl:template match="z:verse">
+  <xsl:template match="verse">
     <div>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </div>
   </xsl:template>
-  <xsl:template match="z:section" mode="verse">
+  <xsl:template match="section" mode="verse">
     <section>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="verse"/>
@@ -282,41 +284,49 @@
 
   <!--====== Block module =======================================-->
 
-  <xsl:template match="z:block" mode="#all">
+  <xsl:template match="block" mode="#all">
     <div>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </div>
   </xsl:template>
-  <xsl:template match="z:block[@role='figure']" mode="#all">
+  <xsl:template match="block[f:has-role(.,'figure')]" mode="#all">
     <figure>
-      <!--FIXME add figcaption-->      
-      <!--include all associated content but the core in the figcaption ?-->
-      <!--handle @aria-describedby-->
-      <!--
-        if count(obj)>1
-          if obj[dedicated caption]
-            nested fig
-            shared cap if needed
-          else
-            single cap + many obj
-        else
-          single cap + obj
-      -->
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="* except z:caption"/>
+      <!--
+        figure's objects:
+        - tables or objects (images)
+        the figure's top-level caption contains:
+        - all captioning elements without @ref if there is an @associate on the parent
+        - all captioning elements with @ref matching all the IDs of the figure's objects
+      -->
+      <xsl:variable name="objects" select="table|object"/>
+      <xsl:variable name="captions"
+        select=".[@associate]/(hd|caption|citation)[not(@ref)]
+        | (hd|caption|citation)[f:references-all(.,$objects)]"
+      />
+      <!--we respect the document order: the caption is created either before or after
+          the object depending on whether the first captioning element is found before
+          or after.-->
+      <xsl:if test="$captions[1] &lt;&lt; $objects[1]">
+        <figcaption>
+          <xsl:apply-templates select="f:simplify-captions($captions)" mode="caption"/>
+        </figcaption>
+      </xsl:if>
+      <xsl:apply-templates select="*"/>
+      <xsl:if test="$captions[1] >> $objects[1]">
+        <figcaption>
+          <xsl:apply-templates select="f:simplify-captions($captions)" mode="caption"/>
+        </figcaption>
+      </xsl:if>
     </figure>
-  </xsl:template>
-  <xsl:template match="@associate" mode="#all">
-    <!--FIXME should be used for figures or/else discarded-->
-    <xsl:attribute name="data-associate" select="."/>
   </xsl:template>
 
   <!--====== Annotation module ==================================-->
 
-  <xsl:template match="z:annotation" mode="#all">
+  <xsl:template match="annotation" mode="#all">
     <aside epub:type="annotation">
-        <!--TODO better @role translation-->
+      <!--TODO better @role translation-->
       <!--<xsl:call-template name="role">
         <xsl:with-param name="roles" select="('annotation',@role)"/>
       </xsl:call-template>-->
@@ -325,7 +335,7 @@
     </aside>
   </xsl:template>
   <!--TODO variants: handle block annotations-->
-  <xsl:template match="z:annoref" mode="#all">
+  <xsl:template match="annoref" mode="#all">
     <a href="{@ref}">
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('annoref',@role)"/>
@@ -334,13 +344,13 @@
       <xsl:apply-templates select="if (@value) then @value else *"/>
     </a>
   </xsl:template>
-  <xsl:template match="z:annoref/@value">
+  <xsl:template match="annoref/@value">
     <xsl:value-of select="."/>
   </xsl:template>
 
   <!--====== Aside module =======================================-->
 
-  <xsl:template match="z:aside" mode="#all">
+  <xsl:template match="aside" mode="#all">
     <aside>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -349,7 +359,7 @@
 
   <!--====== Byline module ======================================-->
 
-  <xsl:template match="z:byline" mode="#all">
+  <xsl:template match="byline" mode="#all">
     <p>
       <xsl:apply-templates select="@*"/>
       <!--TODO translate: @role-->
@@ -360,102 +370,8 @@
   <!--====== Caption module =====================================-->
 
   <!--Captions are handled in the templates of the captioned element-->
-  <xsl:template match="z:caption" mode="#all"/>
-  <xsl:template match="z:caption" mode="figcaption" priority="10">
-    <figcaption>
-      <!--TODO translate: @role-->
-      <xsl:apply-templates select="@*" mode="#default"/>
-      <xsl:apply-templates mode="#default"/>
-    </figcaption>
-  </xsl:template>
-  <xsl:template match="z:caption" mode="tablecaption" priority="10">
-    <xsl:choose>
-      <xsl:when test="some $child in node() satisfies f:is-phrase($child)">
-        <p>
-          <xsl:apply-templates select="@*" mode="#default"/>
-          <xsl:apply-templates mode="#default"/>
-        </p>
-      </xsl:when>
-      <xsl:when test="@* except @ref">
-        <div>
-          <xsl:apply-templates select="@*" mode="#default"/>
-          <xsl:apply-templates mode="#default"/>
-        </div>
-      </xsl:when>
-      <xsl:otherwise>
-          <xsl:apply-templates mode="#default"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <!--====== Cite module ========================================-->
-
-  <xsl:template match="z:citation" mode="#all">
-    <!--TODO normalize: citation (e.g. within a quote) -->
-    <cite>
-      <xsl:apply-templates select="@*"/>
-      <!--TODO translate: @role-->
-      <xsl:apply-templates/>
-    </cite>
-  </xsl:template>
-
-  <!--====== Code module ==================================-->
-
-  <!--TODO variants: refine characterization -->
-  <xsl:template match="z:code" mode="#all">
-    <pre>
-      <code>
-        <xsl:apply-templates select="@*"/>
-        <xsl:apply-templates mode="code"/>
-      </code>
-    </pre>
-  </xsl:template>
-  <xsl:template match="z:code[f:is-phrase(.)]">
-    <code>
-      <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates mode="code"/>
-    </code>
-  </xsl:template>
-  <xsl:template match="z:lngroup" mode="code">
-    <div>
-      <xsl:call-template name="role">
-        <xsl:with-param name="roles" select="('dsy:lngroup',@role)"/>
-      </xsl:call-template>
-      <xsl:apply-templates select="@* except @role"/>
-      <xsl:apply-templates mode="code"/>
-    </div>
-  </xsl:template>
-
-  <!--====== Dateline module ==================================-->
-
-  <xsl:template match="z:dateline">
-    <p>
-      <!--TODO translate: => time/@pubdate child ? -->
-      <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates/>
-    </p>
-  </xsl:template>
-
-  <!--====== Definition module ==================================-->
-
-  <xsl:template match="z:definition">
-    <p>
-      <!--TODO translate: @role -->
-      <!--TODO normalize: definition => dl/dd ? -->
-      <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates/>
-    </p>
-  </xsl:template>
-
-  <!--====== Description module =================================-->
-  
-  <!--TODO Support @epub:describedat when standardized -->
-  
-  <xsl:template match="z:description[@xlink:href]" mode="#all">
-    <xsl:message>[WARNING] Unsupported external description to '<xsl:value-of select="@xlink:href"/>'.</xsl:message>
-  </xsl:template>
-  <xsl:template match="z:description" mode="#all"/>
-  <xsl:template match="z:description" mode="details" priority="10">
+  <xsl:template match="caption" mode="#all"/>
+  <xsl:template match="caption" mode="caption" priority="10">
     <xsl:choose>
       <xsl:when test="some $child in node() satisfies f:is-phrase($child)">
         <p>
@@ -475,50 +391,172 @@
     </xsl:choose>
   </xsl:template>
 
+  <!--====== Cite module ========================================-->
+
+  <xsl:template match="citation" mode="#all">
+    <xsl:if test="not(f:is-captioning(.))">
+      <xsl:call-template name="citation"/>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="citation" mode="caption" priority="10">
+      <xsl:call-template name="citation"/>
+  </xsl:template>
+  <xsl:template name="citation">
+    <!--TODO normalize: citation (e.g. within a quote) -->
+    <cite>
+      <xsl:apply-templates select="@*"/>
+      <!--TODO translate: @role-->
+      <xsl:apply-templates/>
+    </cite>
+  </xsl:template>
+
+  <!--====== Code module ==================================-->
+
+  <!--TODO variants: refine characterization -->
+  <xsl:template match="code" mode="#all">
+    <pre>
+      <code>
+        <xsl:apply-templates select="@*"/>
+        <xsl:apply-templates mode="code"/>
+      </code>
+    </pre>
+  </xsl:template>
+  <xsl:template match="code[f:is-phrase(.)]">
+    <code>
+      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates mode="code"/>
+    </code>
+  </xsl:template>
+  <xsl:template match="lngroup" mode="code">
+    <div>
+      <xsl:call-template name="role">
+        <xsl:with-param name="roles" select="('dsy:lngroup',@role)"/>
+      </xsl:call-template>
+      <xsl:apply-templates select="@* except @role"/>
+      <xsl:apply-templates mode="code"/>
+    </div>
+  </xsl:template>
+
+  <!--====== Dateline module ==================================-->
+
+  <xsl:template match="dateline">
+    <p>
+      <!--TODO translate: => time/@pubdate child ? -->
+      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+
+  <!--====== Definition module ==================================-->
+
+  <xsl:template match="definition">
+    <p>
+      <!--TODO translate: @role -->
+      <!--TODO normalize: definition => dl/dd ? -->
+      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+
+  <!--====== Description module =================================-->
+
+  <!--TODO Support @epub:describedat when standardized -->
+
+  <xsl:template match="description[@xlink:href]" mode="#all">
+    <xsl:message>[WARNING] Unsupported external description to '<xsl:value-of select="@xlink:href"
+      />'.</xsl:message>
+  </xsl:template>
+  <xsl:template match="description" mode="#all"/>
+  <xsl:template match="description" mode="details" priority="10">
+    <xsl:choose>
+      <xsl:when test="some $child in node() satisfies f:is-phrase($child)">
+        <p>
+          <xsl:apply-templates select="@*" mode="#default"/>
+          <xsl:apply-templates mode="#default"/>
+        </p>
+      </xsl:when>
+      <xsl:when test="@* except @ref">
+        <div>
+          <xsl:apply-templates select="@*" mode="#default"/>
+          <xsl:apply-templates mode="#default"/>
+        </div>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates mode="#default"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:function name="f:description-string" as="xs:string">
+    <xsl:param name="desc" as="element()"/>
+    <xsl:choose>
+      <xsl:when test="some $child in $desc/node() satisfies f:is-phrase($child)">
+        <xsl:sequence select="normalize-space(string($desc))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="string-join($desc/*/normalize-space(),' ')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
   <!--====== Headings module ====================================-->
-  <xsl:template match="z:h" mode="#all">
-    <xsl:element name="{if (z:hpart) then 'hgroup' else 'h1'}">
+  <xsl:template match="h" mode="#all">
+    <xsl:element name="{if (hpart) then 'hgroup' else 'h1'}">
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="z:hpart" mode="#all">
+  <xsl:template match="hpart" mode="#all">
     <h1>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </h1>
   </xsl:template>
-  <xsl:template match="z:hd" mode="#all">
-    <xsl:call-template name="hd"/>
+  <xsl:template match="hd" mode="#all">
+    <!--
+    Skip headings referencing tables and objects.
+    They will be treated as captions under the 'caption' mode.
+  -->
+    <xsl:if test="not(f:is-captioning(.))">
+      <xsl:call-template name="hd"/>
+    </xsl:if>
   </xsl:template>
-  <!--Skip table headings unless called from the table template -->
-  <xsl:template match="z:hd[id(@ref)[self::z:table]]" mode="#all"/>
-  <xsl:template match="z:hd" mode="tablecaption" priority="10">
+  <xsl:template match="hd" mode="caption" priority="10">
     <xsl:call-template name="hd"/>
   </xsl:template>
   <xsl:template name="hd">
-    <p>
-      <xsl:call-template name="role">
-        <xsl:with-param name="roles" select="('bridgehead',@role)"/>
-      </xsl:call-template>
-      <xsl:apply-templates select="@* except @role" mode="#default"/>
-      <xsl:apply-templates mode="#default"/>
-    </p>
+    <xsl:choose>
+      <!--figure are sectioning roots, it's safe to translate hd into h1-->
+      <xsl:when test="parent::block[f:has-role(.,'figure')]">
+        <h1>
+          <xsl:apply-templates select="@*"/>
+          <xsl:apply-templates/>
+        </h1>
+      </xsl:when>
+      <xsl:otherwise>
+        <p>
+          <xsl:call-template name="role">
+            <xsl:with-param name="roles" select="('bridgehead',@role)"/>
+          </xsl:call-template>
+          <xsl:apply-templates select="@* except @role" mode="#default"/>
+          <xsl:apply-templates mode="#default"/>
+        </p>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!--====== List module ========================================-->
 
-  <xsl:template match="z:list" mode="#all">
+  <xsl:template match="list" mode="#all">
     <!--TODO normalize: page breaks-->
     <xsl:element name="{if (@type='ordered') then 'ol' else 'ul'}">
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="z:list[@type='ordered']/@start">
+  <xsl:template match="list[@type='ordered']/@start">
     <xsl:copy/>
   </xsl:template>
-  <xsl:template match="z:item" mode="#all">
+  <xsl:template match="item" mode="#all">
     <li>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -528,14 +566,14 @@
   <!--====== Note module ========================================-->
 
   <!--TODO normalize: group adjacent nodes in a parent aside -->
-  <xsl:template match="z:note">
+  <xsl:template match="note">
     <aside>
       <!--TODO translate: @ref-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </aside>
   </xsl:template>
-  <xsl:template match="z:noteref">
+  <xsl:template match="noteref">
     <a rel="note" href="{concat('#',@ref)}">
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('noteref',@role)"/>
@@ -551,39 +589,59 @@
           <xsl:apply-templates/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:apply-templates/>
     </a>
   </xsl:template>
 
   <!--====== Object module ======================================-->
-  <xsl:template match="z:object[f:is-image(.)]" mode="#all">
-    <xsl:variable name="caption" select="//z:caption[@ref=current()/@xml:id]"/>
-    <!--FIXME: figure may have been created in the parent block-->
+  <xsl:template match="object[f:is-image(.)]" mode="#all">
+    <!--TODO  add support for DIAGRAM descriptions -->
+    <!--Description is used for @alt; it comes from either:
+     - external desription
+     - description child
+     - direct content (implicit description[@by='author'])
+     -->
+    <xsl:variable name="alt" as="xs:string" select="f:description-string(
+      if (@desc) then id(tokenize(@desc,'\s+'))[not(@xlink:href)][1]
+      else if (description) then description
+      else .
+      )"/>
+    
+    <xsl:variable name="captions" select="../(hd|caption|citation)[f:references(.,current())]"/>
+    <xsl:variable name="shared-captions"
+      select="..[f:has-role(.,'figure')]/(hd|caption|citation)[f:references-all(.,../(object|table))]"/>
+    <xsl:variable name="dedicated-captions" select="$captions except $shared-captions"/>
     <xsl:choose>
-      <xsl:when test="$caption">
+      <xsl:when test="$dedicated-captions">
         <figure>
-          <xsl:apply-templates select="@*"/>
-          <img src="{@src}" alt="{.}"/>
-          <xsl:apply-templates select="$caption" mode="figcaption"/>
+          <xsl:if test="$dedicated-captions[1] &lt;&lt; .">
+            <figcaption>
+              <xsl:apply-templates select="f:simplify-captions($dedicated-captions)" mode="caption"/>
+            </figcaption>
+          </xsl:if>
+          <img src="{@src}" alt="{$alt}">
+            <xsl:apply-templates select="@*"/>
+          </img>
+          <xsl:if test="$dedicated-captions[1] >> .">
+            <figcaption>
+              <xsl:apply-templates select="f:simplify-captions($dedicated-captions)" mode="caption"/>
+            </figcaption>
+          </xsl:if>
         </figure>
       </xsl:when>
       <xsl:otherwise>
-        <img src="{@src}" alt="{.}"/>
+        <img src="{@src}" alt="{$alt}">
+          <xsl:apply-templates select="@*"/>
+        </img>
       </xsl:otherwise>
     </xsl:choose>
-    <!--TODO better translation of object children-->
-    <!--Either:
-     - direct children (implicit description[@by='author'])
-     - description child
-     - external desription-->
   </xsl:template>
-  <xsl:template match="z:object" mode="#all">
+  <xsl:template match="object" mode="#all">
     <xsl:message select="'object: unsuported media type'"/>
   </xsl:template>
 
   <!--====== Paragraph module ===================================-->
 
-  <xsl:template match="z:p">
+  <xsl:template match="p">
     <p>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -594,7 +652,7 @@
 
   <!--TODO normalize: page breaks-->
   <!--TODO variants: refine characterization-->
-  <xsl:template match="z:pagebreak" mode="block">
+  <xsl:template match="pagebreak" mode="block">
     <div>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('pagebreak',@role)"/>
@@ -602,7 +660,7 @@
       <xsl:apply-templates select="@* except @role"/>
     </div>
   </xsl:template>
-  <xsl:template match="z:pagebreak">
+  <xsl:template match="pagebreak">
     <span>
       <xsl:call-template name="role">
         <xsl:with-param name="roles" select="('pagebreak',@role)"/>
@@ -610,7 +668,7 @@
       <xsl:apply-templates select="@* except @role"/>
     </span>
   </xsl:template>
-  <xsl:template match="z:pagebreak/@value" mode="#all">
+  <xsl:template match="pagebreak/@value" mode="#all">
     <xsl:attribute name="title" select="."/>
   </xsl:template>
 
@@ -618,13 +676,13 @@
 
   <!--TODO variants: refine characterization -->
   <!--TODO translate: citation child => @cite -->
-  <xsl:template match="z:quote">
+  <xsl:template match="quote">
     <blockquote>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
     </blockquote>
   </xsl:template>
-  <xsl:template match="z:quote[f:is-phrase(.)]">
+  <xsl:template match="quote[f:is-phrase(.)]">
     <q>
       <xsl:apply-templates select="@*"/>
       <!--TODO normalize: quotation marks-->
@@ -634,23 +692,25 @@
 
   <!--====== Transition module ==================================-->
 
-  <xsl:template match="z:transition" mode="#all">
+  <xsl:template match="transition" mode="#all">
     <hr>
       <xsl:apply-templates select="@*"/>
     </hr>
   </xsl:template>
 
   <!--====== Table module =======================================-->
-  <xsl:template match="z:table" mode="#all">
+  <xsl:template match="table" mode="#all">
     <table>
       <xsl:apply-templates select="@*"/>
       <!--If the table is within a figure block, the caption has already been translated to a figcaption-->
-      <xsl:if test="not(parent::z:block[@role='figure'])">
-        <xsl:variable name="captions" select="key('refs',@xml:id)[self::z:hd|self::z:caption]"/>
+      <xsl:if test="not(parent::block[@role='figure'])">
+        <xsl:variable name="captions" select="key('refs',@xml:id)[self::hd|self::caption]"/>
         <xsl:variable name="descs" select="id(tokenize(@desc,'\s+'))[not(@xlink:href)]"/>
         <xsl:if test="$captions or $descs">
           <caption>
-            <xsl:apply-templates select="if (count($captions)=1 and $captions[self::z:caption]) then $captions/node() else $captions" mode="tablecaption"/>
+            <xsl:apply-templates
+              select="if (count($captions)=1 and $captions[self::caption]) then $captions/node() else $captions"
+              mode="caption"/>
             <xsl:if test="$descs">
               <!--TODO add CSS style to move out of the screen ?-->
               <details>
@@ -658,64 +718,64 @@
                 <xsl:apply-templates select="$descs" mode="details"/>
               </details>
             </xsl:if>
-          </caption>          
+          </caption>
         </xsl:if>
       </xsl:if>
-      <xsl:apply-templates select="* except z:pagebreak"/>
+      <xsl:apply-templates select="* except pagebreak"/>
       <!-- @colspan, @rowspan, @headers -->
     </table>
     <xsl:call-template name="table-final-pagebreaks"/>
   </xsl:template>
-  <xsl:template match="z:colgroup" mode="#all">
+  <xsl:template match="colgroup" mode="#all">
     <colgroup>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="if(@span) then node() except z:col else node()"/>
+      <xsl:apply-templates select="if(@span) then node() except col else node()"/>
     </colgroup>
   </xsl:template>
-  <xsl:template match="z:col" mode="#all">
+  <xsl:template match="col" mode="#all">
     <col>
       <xsl:apply-templates select="@*"/>
     </col>
   </xsl:template>
-  <xsl:template match="z:colgroup/@span | z:col/@span" mode="#all">
-      <xsl:copy/>
+  <xsl:template match="colgroup/@span | col/@span" mode="#all">
+    <xsl:copy/>
   </xsl:template>
-  <xsl:template match="z:thead" mode="#all">
+  <xsl:template match="thead" mode="#all">
     <thead>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="* except z:pagebreak"/>
+      <xsl:apply-templates select="* except pagebreak"/>
     </thead>
   </xsl:template>
-  <xsl:template match="z:tbody" mode="#all">
+  <xsl:template match="tbody" mode="#all">
     <tbody>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="* except z:pagebreak"/>
+      <xsl:apply-templates select="* except pagebreak"/>
     </tbody>
   </xsl:template>
-  <xsl:template match="z:tfoot" mode="#all">
+  <xsl:template match="tfoot" mode="#all">
     <tfoot>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="* except z:pagebreak"/>
+      <xsl:apply-templates select="* except pagebreak"/>
     </tfoot>
   </xsl:template>
-  <xsl:template match="z:tr" mode="#all">
+  <xsl:template match="tr" mode="#all">
     <tr>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="* except z:pagebreak"/>
+      <xsl:apply-templates select="* except pagebreak"/>
     </tr>
   </xsl:template>
-  <xsl:template name="th" match="z:th" mode="#all">
+  <xsl:template name="th" match="th" mode="#all">
     <th>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="table-incell-pagebreaks"/>
       <xsl:apply-templates/>
     </th>
   </xsl:template>
-  <xsl:template match="z:td[@scope]" mode="#all">
+  <xsl:template match="td[@scope]" mode="#all">
     <!-- Note: As td/@scope is not defined in HTML, td/@scope becomes th/@scope -->
     <xsl:call-template name="th"/>
   </xsl:template>
-  <xsl:template match="z:td" mode="#all">
+  <xsl:template match="td" mode="#all">
     <td>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="table-incell-pagebreaks"/>
@@ -726,27 +786,33 @@
     <xsl:copy/>
   </xsl:template>
   <xsl:template name="table-incell-pagebreaks">
-      <xsl:if test="position()=1">
-        <!--pagebreak just before the current row-->
-        <xsl:apply-templates select="../preceding-sibling::*[1][self::z:pagebreak]"/>
-        <!--pagebreak at the end of the previous row-->
-        <xsl:apply-templates select="../preceding-sibling::*[1][self::z:tr]/*[last()][self::z:pagebreak]"/>
-      </xsl:if>
-      <xsl:if test="position()=1 and not(../preceding-sibling::z:tr)">
-        <!--pagebreak at the end of the previous header or body-->
-        <xsl:apply-templates select="../parent::z:tbody/preceding-sibling::*[1][self::z:thead or self::z:tbody]/(*[last()]|*[last()]/*[last()])[self::z:pagebreak]"/>
-        <xsl:apply-templates select="../parent::z:tfoot/preceding-sibling::*[1][self::z:tbody]/(*[last()]|*[last()]/*[last()])[self::z:pagebreak]"/>
-      </xsl:if>
-      <!--pagebreak before the cell -->
-      <xsl:apply-templates select="preceding-sibling::*[1][self::z:pagebreak]"/>
+    <xsl:if test="position()=1">
+      <!--pagebreak just before the current row-->
+      <xsl:apply-templates select="../preceding-sibling::*[1][self::pagebreak]"/>
+      <!--pagebreak at the end of the previous row-->
+      <xsl:apply-templates
+        select="../preceding-sibling::*[1][self::tr]/*[last()][self::pagebreak]"/>
+    </xsl:if>
+    <xsl:if test="position()=1 and not(../preceding-sibling::tr)">
+      <!--pagebreak at the end of the previous header or body-->
+      <xsl:apply-templates
+        select="../parent::tbody/preceding-sibling::*[1][self::thead or self::tbody]/(*[last()]|*[last()]/*[last()])[self::pagebreak]"/>
+      <xsl:apply-templates
+        select="../parent::tfoot/preceding-sibling::*[1][self::tbody]/(*[last()]|*[last()]/*[last()])[self::pagebreak]"
+      />
+    </xsl:if>
+    <!--pagebreak before the cell -->
+    <xsl:apply-templates select="preceding-sibling::*[1][self::pagebreak]"/>
   </xsl:template>
   <xsl:template name="table-final-pagebreaks">
     <!--pagebreak after the last row-->
-    <xsl:apply-templates select="*[last()][self::z:pagebreak]" mode="block"/>
+    <xsl:apply-templates select="*[last()][self::pagebreak]" mode="block"/>
     <!--pagebreak as the last child of the last row-->
-    <xsl:apply-templates select="*[last()][self::z:tr]/*[last()][self::z:pagebreak]" mode="block"/>
+    <xsl:apply-templates select="*[last()][self::tr]/*[last()][self::pagebreak]" mode="block"/>
     <!--pagebreak at the end of the last header or body-->
-    <xsl:apply-templates select="*[last()][self::z:tbody|self::z:tfoot]/(*[last()]|*[last()]/*[last()])[self::z:pagebreak]" mode="block"/>
+    <xsl:apply-templates
+      select="*[last()][self::tbody|self::tfoot]/(*[last()]|*[last()]/*[last()])[self::pagebreak]"
+      mode="block"/>
   </xsl:template>
 
   <!--===========================================================-->
@@ -755,7 +821,7 @@
 
   <!--====== Span module ========================================-->
 
-  <xsl:template match="z:span" mode="#all">
+  <xsl:template match="span" mode="#all">
     <span>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="#current"/>
@@ -764,14 +830,14 @@
 
   <!--====== Abbreviations module ===============================-->
 
-  <xsl:template match="z:abbr" mode="#all">
+  <xsl:template match="abbr" mode="#all">
     <abbr title="{normalize-space(id(@ref))}">
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="#current"/>
     </abbr>
   </xsl:template>
-  <xsl:template match="z:expansion[not(ancestor::z:head)]" mode="#all">
+  <xsl:template match="expansion[not(ancestor::head)]" mode="#all">
     <!--
       expansions in the header are ignored (used for abbreviation's title attribute)
       expansions in the body are translated as spans
@@ -785,7 +851,7 @@
 
   <!--====== Dialogue module ====================================-->
 
-  <xsl:template match="z:d" mode="#all">
+  <xsl:template match="d" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <!--TODO normalize: quotation marks-->
@@ -797,7 +863,7 @@
 
   <!--====== Emphasis module ====================================-->
 
-  <xsl:template match="z:emph" mode="#all">
+  <xsl:template match="emph" mode="#all">
     <em>
       <!-- TODO translate: => em vs strong ? -->
       <xsl:apply-templates select="@*"/>
@@ -807,7 +873,7 @@
 
   <!--====== Line module ========================================-->
 
-  <xsl:template match="z:ln" mode="#all">
+  <xsl:template match="ln" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -816,7 +882,7 @@
     <br/>
   </xsl:template>
 
-  <xsl:template match="z:lnum" mode="#all">
+  <xsl:template match="lnum" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -824,7 +890,7 @@
     </span>
   </xsl:template>
 
-  <xsl:template match="z:lngroup" mode="#all">
+  <xsl:template match="lngroup" mode="#all">
     <div>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -834,7 +900,7 @@
 
   <!--====== Linking module =====================================-->
 
-  <xsl:template match="z:ref" mode="#all">
+  <xsl:template match="ref" mode="#all">
     <a>
       <!--TODO translate: conceptual link ?-->
       <!--TODO translate: multiple @ref destinations ?-->
@@ -856,7 +922,7 @@
 
   <!--====== Name module ========================================-->
 
-  <xsl:template match="z:name" mode="#all">
+  <xsl:template match="name" mode="#all">
     <!--TODO translate: => i, span, b ?-->
     <i>
       <!--TODO translate: @role-->
@@ -867,7 +933,7 @@
 
   <!--====== Num module =========================================-->
 
-  <xsl:template match="z:num" mode="#all">
+  <xsl:template match="num" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -880,7 +946,7 @@
 
   <!--====== Sentence module ====================================-->
 
-  <xsl:template match="z:s" mode="#all">
+  <xsl:template match="s" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -891,7 +957,7 @@
   <!--====== Term module ========================================-->
 
   <!-- TODO translate: => i, dfn ? -->
-  <xsl:template match="z:term" mode="#all">
+  <xsl:template match="term" mode="#all">
     <xsl:element
       name="{if (id(@ref)=(parent::*,preceding-sibling::*,following-sibling::*)) 
                then 'dfn'
@@ -905,7 +971,7 @@
 
   <!--====== Time module ========================================-->
 
-  <xsl:template match="z:time" mode="#all">
+  <xsl:template match="time" mode="#all">
     <time>
       <xsl:apply-templates select="@*"/>
       <xsl:if test="@time">
@@ -917,14 +983,14 @@
 
   <!--====== Word module ========================================-->
 
-  <xsl:template match="z:w" mode="#all">
+  <xsl:template match="w" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="#current"/>
     </span>
   </xsl:template>
-  <xsl:template match="z:wpart" mode="#all">
+  <xsl:template match="wpart" mode="#all">
     <span>
       <!--TODO translate: @role-->
       <xsl:apply-templates select="@*"/>
@@ -937,14 +1003,14 @@
   <!--===========================================================-->
   <!--====== Sup/sub module =====================================-->
 
-  <xsl:template match="z:sub" mode="#all">
+  <xsl:template match="sub" mode="#all">
     <sub>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="#current"/>
     </sub>
   </xsl:template>
 
-  <xsl:template match="z:sup" mode="#all">
+  <xsl:template match="sup" mode="#all">
     <sup>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates mode="#current"/>
@@ -954,7 +1020,7 @@
   <!--====== Char module ========================================-->
 
   <!-- TODO differentiate from phrase level-->
-  <!--<xsl:template match="z:span" mode="#all">
+  <!--<xsl:template match="span" mode="#all">
     <!-\- TODO translate: => CSS ? -\->
     <span>
       <xsl:apply-templates select="@*"/>
@@ -1020,23 +1086,47 @@
   <!-- Util functions                                            -->
   <!--===========================================================-->
 
+  <xsl:function name="f:has-role" as="xs:boolean">
+    <xsl:param name="elem" as="node()"/>
+    <xsl:param name="role" as="xs:string*"/>
+    <xsl:sequence select="tokenize($elem/@role,'\s+')=$role"/>
+  </xsl:function>
   <xsl:function name="f:is-phrase" as="xs:boolean">
     <!--FIXME improve heuristics-->
     <xsl:param name="node" as="node()"/>
     <xsl:sequence
       select="$node/self::text()[normalize-space()] or $node/preceding-sibling::text()[normalize-space()]
       or $node/following-sibling::text()[normalize-space()]
-      or $node/parent::z:p"
+      or $node/parent::p"
     />
   </xsl:function>
   <xsl:function name="f:is-block" as="xs:boolean">
     <!--FIXME improve heuristics-->
     <xsl:param name="node" as="node()"/>
-    <xsl:sequence select="$node/(self::z:p or self::z:block)"/>
+    <xsl:sequence select="$node/(self::p or self::block)"/>
   </xsl:function>
   <xsl:function name="f:is-image" as="xs:boolean">
     <xsl:param name="node" as="node()"/>
     <xsl:sequence
       select="starts-with($node/@srctype,'image/') or matches($node/@src,'\.(jpg|png|gif|svg)$')"/>
+  </xsl:function>
+  <xsl:function name="f:is-captioning" as="xs:boolean">
+    <xsl:param name="elem" as="element()"/>
+    <xsl:sequence
+      select="$elem/../@associate or $elem/id(tokenize($elem/@ref,'\s+'))[self::table|self::object]"/>
+  </xsl:function>
+  <xsl:function name="f:references" as="xs:boolean">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="elems" as="element()*"/>
+    <xsl:sequence select="$ref/@ref and tokenize($ref/@ref,'\s+')=$elems/@xml:id"/>
+  </xsl:function>
+  <xsl:function name="f:references-all" as="xs:boolean">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="elems" as="element()*"/>
+    <xsl:sequence select="$ref/@ref and (every $id in $elems/@xml:id satisfies tokenize($ref/@ref,'\s+')=$id)"/>
+  </xsl:function>
+  <xsl:function name="f:simplify-captions" as="node()*">
+    <xsl:param name="captions" as="element()*"/>
+    <xsl:sequence select="if (count($captions)=1 and $captions[self::caption]) then $captions/node() else $captions"/>
   </xsl:function>
 </xsl:stylesheet>

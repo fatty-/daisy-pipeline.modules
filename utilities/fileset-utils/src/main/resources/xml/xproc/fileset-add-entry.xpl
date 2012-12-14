@@ -11,11 +11,24 @@
 
   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
 
+<!--TODO awkward, add the entry with XProc, then perform URI cleanup-->
   <p:xslt name="href-uri">
-    <p:with-param name="to" select="$href"/>
-    <p:with-param name="from" select="/*/@xml:base"/>
+    <p:with-param name="uri" select="$href"/>
+    <p:with-param name="base" select="base-uri(/*)"/>
     <p:input port="stylesheet">
-      <p:document href="fileset-add-entry.uri-ify.xsl"/>
+      <p:inline>
+        <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
+          version="2.0" exclude-result-prefixes="#all">
+          <xsl:import href="http://www.daisy.org/pipeline/modules/file-utils/xslt/uri-functions.xsl"/>
+          <xsl:param name="uri" required="yes"/>
+          <xsl:param name="base" required="yes"/>
+          <xsl:template match="/*">
+            <d:file>
+              <xsl:attribute name="href" select="pf:relativize-uri($uri,$base)"/>
+            </d:file>
+          </xsl:template>
+        </xsl:stylesheet>
+      </p:inline>
     </p:input>
   </p:xslt>
   <p:sink/>
@@ -55,10 +68,16 @@
       <p:add-attribute match="/*" attribute-name="href">
         <p:with-option name="attribute-value" select="$href-uri-ified"/>
       </p:add-attribute>
+      <p:add-attribute match="/*" attribute-name="xml:base">
+        <p:with-option name="attribute-value" select="base-uri(/*)">
+          <p:pipe port="source" step="main"/>
+        </p:with-option>
+      </p:add-attribute>
+      <p:delete match="@xml:base"/>
       <!--Clean-up the media-type-->
       <p:delete match="@media-type[not(normalize-space())]"/>
     </p:group>
-
+    
     <!--Insert the entry as the last or first child of the file set-->
     <p:insert match="/*">
       <p:input port="source">
